@@ -1,0 +1,54 @@
+{% set name = 'motmetrics' %}
+{% set version = '1.1.3' %}
+{% set sha256 = '45a1a461a394caaa5997643cb122d140e11e18ec2e2fa066bc329dc28e7a4c4d' %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  skip: True  # [not linux]
+  script: python -m pip install --no-deps --ignore-installed . --verbose
+  noarch: python
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - python
+    - numpy
+    - pandas
+    - scipy
+    # Extra LAP solvers (conda does not care about optional deps)
+    - lap
+    - lapsolver
+
+test:
+  source_files:
+    - motmetrics/tests
+    - motmetrics/data
+  requires:
+    - pytest
+  imports:
+    - motmetrics
+  commands:
+    - pytest motmetrics/tests/*
+
+about:
+  home: https://github.com/cheind/py-motmetrics
+  license: MIT
+  license_file: LICENSE
+  summary: 'Benchmark multiple object trackers (MOT) in Python'
+  description: |
+    The py-motmetrics library provides a Python implementation of metrics for benchmarking multiple object trackers (MOT).
+
+extra:
+  recipe-maintainers:
+    - sdvillal
